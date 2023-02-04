@@ -9,7 +9,7 @@ def get_questions():
 
     ques_dic = {1: 'what is the name of your favorite pet?', 2: 'what is your favorite food?', 3: 'what was the name of your first elementary school?', 4: 'what is your birth city?', 5: 'what high school did you attend?'}
     ans=[]
-    # rand_ques = random.choice(list(ques_dic.values()))
+
     for i in range(3):
         rand_ques = random.choice(list(ques_dic.values()))
         ans.append(rand_ques)
@@ -18,7 +18,20 @@ def get_questions():
 
 
 def receive_ans(ans):
-    
+    # function to store answer and hint 
+    ans_dic= {}
+    list_ans=[]
+    for i in range(len(ans)):
+        ans1 = input()
+        hint = input()
+
+        list_ans.append(ans1)
+        list_ans.append(hint)
+
+        ans_dic[ans[i]]=list_ans
+
+    return ans_dic
+
 
 
 @app.route("/")
