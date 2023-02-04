@@ -31,15 +31,13 @@ class Table():
     def insert_values(self, ques):
         cursor= self.conn.cursor()
         insert_query= "INSERT into employee(name, state) VALUES (%s, %s, %s, %d)"
-        cursor.execute(insert_query, data) 
+        cursor.execute(insert_query) 
         self.conn.close()
 
 
 
 Table.establish_connection()
 Table.create_table()
-ques= receive_ans()
-Table.insert_values(ques) 
     
         
 
