@@ -18,6 +18,7 @@
     <div
       class="justify-content-center align-items-center container mx-10 my-5 py-2"
     >
+    <form action="{{url_for('question')}}" method="post">
       <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label"
           ><h2>Email</h2></label
@@ -27,7 +28,7 @@
         <input
           type="text"
           class="w-50 p-2 form-control"
-          id="exampleFormControlInput1"
+          id="email"
           placeholder="Enter your email...."
         />
       </div>
@@ -40,7 +41,7 @@
         <input
           type="text"
           class="w-50 p-2 form-control"
-          id="exampleFormControlInput1"
+          id="ans1"
           placeholder="Enter your answer...."
         />
       </div>
@@ -54,7 +55,7 @@
         <input
           type="text"
           class="w-50 p-2 form-control"
-          id="exampleFormControlInput1"
+          id="ans2"
           placeholder="Enter your answer...."
         />
       </div>
@@ -68,14 +69,15 @@
         <input
           type="text"
           class="w-50 p-2 form-control"
-          id="exampleFormControlInput1"
+          id="ans3"
           placeholder="Enter your answer...."
         />
       </div>
 
       <div class="mb-3 my-5 py-5">
-        <button type="button" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
       </div>
+    </form>
     </div>
   </body>
 </html>

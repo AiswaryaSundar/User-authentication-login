@@ -3,11 +3,7 @@ from flask import Flask, request, session, redirect, url_for, render_template, f
 import psycopg2
 import psycopg2.extras
 
-hostname = '127.0.0.1'
-database = 'postgres'
-username = 'postgres'
-pwd = 'Aruba@123'
-port_id = 5433
+app = Flask(__name__)
 #conn = None
 #cur = None
 
@@ -52,24 +48,22 @@ port_id = 5433
 
 conn = psycopg2.connect(
              host='localhost', 
-             database='demodb',
-             user='postgres',
-             password='Aruba@123',
-             port='5433'
+             database='demo',
+             port='5432'
              )
 
 cur = conn.cursor()
 
+@app.route('/')
+def reg():
+    return render_template('register.html')
 
-
-@app.route('/register', methods=['GET','POST'])
+@app.route('/register', methods=['POST'])
 def register():
-    if request.method == 'POST' and 'fname' in request.form and 'passwd' in request.form and 'lname' in request.form and 'email' in request.form:
-        fname = request.form['fname']
         lname = request.form['lname']
         email = request.form['email']
         passwd = request.form['password']
-        print(email,fname)
+        c_passwd = request.form['confirm_passsword']
         create_table = ''' CREATE TABLE IF NOT EXISTS users (
                           fname varchar(40) NOT NULL,
                           lname varchar(40) NOT NULL,
@@ -77,13 +71,24 @@ def register():
                           email varchar(40) NOT NULL); '''
         #check for validations pls
 
-        cur.execute('INSERT INTO UsersDetails (fname,lname,passwd,email) VALUES (%s,%s,%s,%s)',(fname,lname,passwd,email))
-        conn.commit()
-    elif request.method == 'POST' :
-        flash('Please fill out the form !')
-
-
-    return render_template('questions.html')
+        create_table_ques = ''' CREATE TABLE IF NOT EXISTS UserQuestions (
+                          CONSTRAINT fk_Email  
+                          FOREIGN KEY(email)   
+                          REFERENCES users(email)
+                          q1 varchar(40) NOT NULL,
+                          q2 varchar(40) NOT NULL,
+                          q3 varchar(40) NOT NULL,
+                          ans1 varchar(40) NOT NULL,
+                          ans2 varchar(40) NOT NULL,
+                          ans3 varchar(40) NOT NULL); '''
+        cur.execute(create_table)
+        cur.execute(create_table_ques)
+        if passwd==c_passwd:
+            cur.execute('INSERT INTO users (fname,lname,passwd,email) VALUES (%s,%s,%s,%s)',(fname,lname,passwd,email))
+            conn.commit()
+            return render_template('questions.html')
+        else:
+            flash('Password does not match')
 
 @app.route('/questions', methods=['GET','POST'])
 def questions():
@@ -97,16 +102,14 @@ def questions():
         email = request.form['email']
         print(ans1,ans2)
 
-        cur.execute('INSERT INTO UsersQuestions (email,ans1,ans2,ans3) VALUES (%s,%s,%s,%s)',(email,ans1,ans2,ans3))
+        cur.execute('INSERT INTO users (email,ans1,ans2,ans3) VALUES (%s,%s,%s,%s)',(email,ans1,ans2,ans3))
         conn.commit()
-    elif request.method == 'POST' :
-        flash('Please fill out the form !')
+        return render_template('login.html')
 
-    return render_template('login.html')
+    return render_template('questions.html')
 
-@app.route('/login/', methods=['GET','POST'])
+@app.route('/login', methods=['GET','POST'])
 def login():
-
     if request.method == 'POST' and 'email' in request.form and 'passwd' in request.form:
         email = request.form['email']
         passwd = request.form['passwd']
@@ -118,13 +121,12 @@ def login():
             passwdreal = accnt['passwd']
             print(passwdreal)
             if passwd == passwdreal:
-               return redirect(url_for('home'))
+               return render_template('home.html')
             else:
                 flash('Incorrect Username/password')
         else:
             flash('Incorrect Username/password')
-
-    return render_template('login.html')
+    return render_template('index.html')
 
 
 
@@ -156,9 +158,6 @@ def login():
 #     else:
 #         return render_template("/")
 
-# @app.route("/")
-# def hello_world():
-#     ques_dic = {1: 'what is the name of your favorite pet?',
-#                 2: 'what is your favorite food?',
-#                 3: 'what was the name of your first elementary school?'}
-#     return render_template('index.html',ques=ques_dic)
+@app.route("/")
+def hello_world():
+    return render_template('index.html')
