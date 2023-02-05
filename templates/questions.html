@@ -9,34 +9,54 @@
     <title>Authorization</title>
 </head>
 <body background="https://images.unsplash.com/photo-1508614999368-9260051292e5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjB8fGNvbG9yJTIwYmFja2dyb3VuZHxlbnwwfHwwfHw%3D&w=1000&q=80">
-    <div class="justify-content-center align-items-center container mx-10 my-5 py-2">
-    <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label"><h2>What is the name of your favorite pet?</h2></label>
+    
+    <div class="justify-content-center align-items-center container mx-10 my-5 py-1">
+    <form action="{{url_for('questions')}}" method="post">
+    <!-- Security Question 1-->
+    <div class="mb-1">
+        <label for="exampleFormControlInput1" class="form-label"><h5>What is the name of your favorite pet?</h5></label>
     </div>
-    <div class="mb-3">
-        <input type="text" class="my-2 w-50 p-2 form-control" id="exampleFormControlInput1" placeholder="Hint....">
-        <input type="text" class="w-50 p-2 form-control" id="exampleFormControlInput1" placeholder="Enter your answer....">
-    </div>
-
-    <div class="mb-3 my-5">
-        <label for="exampleFormControlInput1" class="form-label"><h2>What was the name of your first elementary school?</h2></label>
-    </div>
-    <div class="mb-3">
-        <input type="text" class="my-2 w-50 p-2 form-control" id="exampleFormControlInput1" placeholder="Hint....">
-        <input type="text" class="w-50 p-2 form-control" id="exampleFormControlInput1" placeholder="Enter your answer....">
+    <div class="mb-1">
+        <input type="text" class="my-2 w-50 p-1 form-control" id="exampleFormControlInput1" placeholder="Hint....">
+        <input type="text" class="w-50 p-1 form-control" id="exampleFormControlInput1" placeholder="Enter your answer....">
     </div>
 
-    <div class="mb-3 my-5">
-        <label for="exampleFormControlInput1" class="form-label"><h2>What is your birth city?</h2></label>
+    <div class="mb-1 my-5">
+        <label for="exampleFormControlInput1" class="form-label"><h5>What was the name of your first elementary school?</h5></label>
     </div>
-    <div class="mb-3">
-        <input type="text" class="my-2 w-50 p-2 form-control" id="exampleFormControlInput1" placeholder="Hint....">
-        <input type="text" class="w-50 p-2 form-control" id="exampleFormControlInput1" placeholder="Enter your answer....">
+    <div class="mb-1">
+        <input type="text" class="my-2 w-50 p-1 form-control" id="exampleFormControlInput1" placeholder="Hint....">
+        <input type="text" class="w-50 p-1 form-control" id="exampleFormControlInput1" placeholder="Enter your answer....">
     </div>
 
-    <div class="mb-3 my-5 py-5">
-        <button type="button" class="btn btn-primary">Submit</button>
+    <div class="mb-1 my-5">
+        <label for="exampleFormControlInput1" class="form-label"><h5>What is your birth city?</h5></label>
     </div>
+    <div class="mb-1">
+        <input type="text" class="my-2 w-50 p-1 form-control" id="exampleFormControlInput1" placeholder="Hint....">
+        <input type="text" class="w-50 p-1 form-control" id="exampleFormControlInput1" placeholder="Enter your answer....">
+    </div>
+
+    <div class="mb-1 my-5">
+        <label for="exampleFormControlInput1" class="form-label"><h5>What is your birth city?</h5></label>
+    </div>
+    <div class="mb-1">
+        <input type="text" class="my-2 w-50 p-1 form-control" id="exampleFormControlInput1" placeholder="Hint....">
+        <input type="text" class="w-50 p-1 form-control" id="exampleFormControlInput1" placeholder="Enter your answer....">
+    </div>
+
+    <div class="mb-1 my-5">
+        <label for="exampleFormControlInput1" class="form-label"><h5>What is your birth city?</h5></label>
+    </div>
+    <div class="mb-1">
+        <input type="text" class="my-2 w-50 p-1 form-control" id="exampleFormControlInput1" placeholder="Hint....">
+        <input type="text" class="w-50 p-1 form-control" id="exampleFormControlInput1" placeholder="Enter your answer....">
+    </div>
+
+    <div class="mb-3 my-3 py-5">
+        <button type="button" class="btn btn-primary btn-lg">Submit</button>
+    </div>
+        </form>
     </div>
 </body>
 </html>
