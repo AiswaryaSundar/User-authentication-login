@@ -10,17 +10,22 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body background="https://images.unsplash.com/photo-1508614999368-9260051292e5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjB8fGNvbG9yJTIwYmFja2dyb3VuZHxlbnwwfHwwfHw%3D&w=1000&q=80">
+    <!-- Security Question Check -->
     <div class="mx-5 my-5 py-4">
+        <form action="{{url_for('autho')}}" method="post">
     <div class="mx-5 py-1 px-1 my-2">
-        <label for="exampleFormControlInput1" class="form-label"><h2>What is the name of your favorite pet?</h2></label>
+        <label for="exampleFormControlInput1" class="form-label"><h3>What is the name of your favorite pet?</h3></label>
     </div>
     <div class="mx-5 py-1 px-1">
-        <input type="text" class="my-2 w-50 p-2 form-control" id="exampleFormControlInput1" placeholder="Hint....">
-        <input type="text" class="w-50 p-2 form-control" id="exampleFormControlInput1" placeholder="Enter your answer....">
+        <button type="button" class="btn btn-secondary btn-sm">Hint</button>
     </div>
-
-    <div class="mx-5 my-5 ">
-        <div class="card py-5 px-3 my-5">
+    <div class="mx-5 py-1 px-1">
+        <input type="text" class="w-50 p-2 form-control" name="answer" placeholder="Enter your answer....">
+    </div>
+    
+    <!-- otp -->
+    <div class="mx-4 py-1 px-3 my-2">
+        <div class="py-5 px-3 my-5">
             <h5 class="m-0">Mobile phone verification</h5><span class="mobile-text">Enter the code we just send on your mobile phone <b class="text-danger">+91 86684833</b></span>
             <div class="d-flex flex-row mt-5"><input type="text" class="form-control" autofocus=""><input type="text" class="form-control"><input type="text" class="form-control"><input type="text" class="form-control"></div>
             <div class="text-center mt-5"><span class="d-block mobile-text">Don't receive the code?</span><span class="font-weight-bold text-danger cursor">Resend</span></div>
@@ -28,8 +33,9 @@
     </div>
 
     <div class="mx-5 py- px-1">
-        <button type="button" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary btn-lg">Submit</button>
     </div>
+       </form>
     </div>
 </body>
 </html>
