@@ -1,39 +1,30 @@
-from flask import Flask
-import random
+from flask import Flask, render_template, request
+import psycopg2
+
 
 app = Flask(__name__)
 
+@app.route("/security_question_validation")
 def get_questions(): 
-    # fucn to api
-    # ques = ["what is the name of your favorite pet?", "what is your favorite food?", "what was the name of your first elementary school?","what is your birth city?", "what high school did you attend?" ]
-
-    ques_dic = {1: 'what is the name of your favorite pet?', 2: 'what is your favorite food?', 3: 'what was the name of your first elementary school?', 4: 'what is your birth city?', 5: 'what high school did you attend?'}
-    ans=[]
-
-    for i in range(3):
-        rand_ques = random.choice(list(ques_dic.values()))
-        ans.append(rand_ques)
-
-    return ans 
-
-
-def receive_ans(ans):
-    # function to store answer and hint 
-    ans_dic= {}
-    list_ans=[]
-    for i in range(len(ans)):
-        ans1 = input()
-        hint = input()
-
-        list_ans.append(ans1)
-        list_ans.append(hint)
-
-        ans_dic[ans[i]]=list_ans
-
-    return ans_dic
-
-
+    # function to api
+    try: 
+        conn = psycopg2.connect(database="demo", host='127.0.0.1', port= '5432')
+    except:
+        print("DB not connected")
+    conn.autocommit = True
+    cursor = conn.cursor()
+    a1="rosi"
+    a2="roti"
+    a3="kns"
+    r1=request.form['q1']
+    r2=request.form['q2']
+    r3=request.form['q3']
+    if(r1==a1 and r2==a2 and r3==a3):
+        return "<h2>Login Success</h2>"
+    else:
+        return render_template("/")
 
 @app.route("/")
 def hello_world():
-    return "<p>Hello, World! rahul</p>"
+    ques_dic = {1: 'what is the name of your favorite pet?', 2: 'what is your favorite food?', 3: 'what was the name of your first elementary school?'}
+    return render_template('index.html',ques=ques_dic)
