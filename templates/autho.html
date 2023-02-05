@@ -12,7 +12,7 @@
 <body background="https://images.unsplash.com/photo-1508614999368-9260051292e5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjB8fGNvbG9yJTIwYmFja2dyb3VuZHxlbnwwfHwwfHw%3D&w=1000&q=80">
     <!-- Security Question Check -->
     <div class="mx-5 my-5 py-4">
-        <form action="{{url_for('register')}}" method="post">
+        <form action="{{url_for('autho')}}" method="post">
     <div class="mx-5 py-1 px-1 my-2">
         <label for="exampleFormControlInput1" class="form-label"><h3>What is the name of your favorite pet?</h3></label>
     </div>
@@ -20,7 +20,7 @@
         <button type="button" class="btn btn-secondary btn-sm">Hint</button>
     </div>
     <div class="mx-5 py-1 px-1">
-        <input type="text" class="w-50 p-2 form-control" id="exampleFormControlInput1" placeholder="Enter your answer....">
+        <input type="text" class="w-50 p-2 form-control" name="answer" placeholder="Enter your answer....">
     </div>
     
     <!-- otp -->
@@ -33,7 +33,7 @@
     </div>
 
     <div class="mx-5 py- px-1">
-        <button type="button" class="btn btn-primary btn-lg">Submit</button>
+        <button type="submit" class="btn btn-primary btn-lg">Submit</button>
     </div>
        </form>
     </div>

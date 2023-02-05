@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,request,render_template,url_for
 import random
 
 app = Flask(__name__)
@@ -36,6 +36,24 @@ def receive_ans(ans):
 
 @app.route("/")
 def hello_world():
-    return "<p>Hello, World! rahul</p>"
+    print("hii")
+    return render_template('autho.html')
 
-update
+@app.route("/questions", methods=['POST'])
+def questions():
+    hint1 = request.form['hint1']
+    print(hint1)
+    file1 = open("test.txt", "a") # append mode
+    file1.write(hint1)
+    file1.close()
+    return("hii")
+
+
+@app.route("/autho", methods=['POST'])
+def autho():
+    answer = request.form['answer']
+    print(answer)
+    file1 = open("test.txt", "a") # append mode
+    file1.write(answer)
+    file1.close()
+    return("hii")
