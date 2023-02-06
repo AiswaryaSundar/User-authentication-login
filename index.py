@@ -4,10 +4,16 @@ import psycopg2.extras
 from random import *  
 import smtplib
 from flask_mail import Mail
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import os
+import bcrypt 
+from flask_bcrypt import bcrypt
+
+import hashlib
 
 app = Flask(__name__)
+# app= bcrypt(app) 
+
 mail = Mail(app)  
 
 app.config["MAIL_SERVER"]='smtp.gmail.com'  
@@ -20,11 +26,7 @@ mail = Mail(app)
 app.secret_key = 'cairocoders-ednal'
 
 conn = psycopg2.connect(
-             host='localhost', 
-             database='demo',
-             port='5432',
-             user='postgres',
-             password='gokul1234'
+             database="postgres", user='kirtipurohit', password='Aruba@123', host='127.0.0.1', port= '5432'
              )
 
 otp = randint(100000,999999) 
@@ -35,14 +37,16 @@ cur = conn.cursor()
 def home():
     return render_template('register.html')
 
-@app.route('/register', methods=['GET','POST'])
+@app.route('/register', methods=["GET", "POST"])
 def register():
-    cur = conn.cursor
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
+    cur = conn.cursor()
+    if request.method == "POST":
+        fname= request.form['fname']
         lname = request.form['lname']
         email = request.form['email']
         passwd = request.form['password']
         c_passwd = request.form['confirm_passsword']
+        print(fname, lname, email, passwd, c_passwd)
         create_table = ''' CREATE TABLE IF NOT EXISTS users (
                           fname varchar(40) NOT NULL,
                           lname varchar(40) NOT NULL,
@@ -50,10 +54,25 @@ def register():
                           email varchar(40) NOT NULL); '''
         #check for validations pls
         print('table creating')
+        #Encryption 
+        salt = os.urandom(32) # Remember this
+        key = hashlib.pbkdf2_hmac(
+            'sha256', # The hash digest algorithm for HMAC
+            passwd.encode('utf-8'), # Convert the password to bytes
+            salt, # Provide the salt
+            100000 # It is recommended to use at least 100,000 iterations of SHA-256 
+        )
+        confirm_key = hashlib.pbkdf2_hmac(
+            'sha256', # The hash digest algorithm for HMAC
+            c_passwd.encode('utf-8'), # Convert the password to bytes
+            salt, # Provide the salt
+            100000 # It is recommended to use at least 100,000 iterations of SHA-256 
+        )
         create_table_ques = ''' CREATE TABLE IF NOT EXISTS UserQuestions (
                           CONSTRAINT fk_Email  
                           FOREIGN KEY(email)   
-                          REFERENCES users(email)
+                          REFERENCES users(email), 
+
                           q1 varchar(40) NOT NULL,
                           q2 varchar(40) NOT NULL,
                           q3 varchar(40) NOT NULL,
@@ -62,8 +81,8 @@ def register():
                           ans3 varchar(40) NOT NULL); '''
         cur.execute(create_table)
         cur.execute(create_table_ques)
-        if passwd==c_passwd:
-            cur.execute('INSERT INTO users (fname,lname,passwd,email) VALUES (%s,%s,%s,%s)',(fname,lname,passwd,email))
+        if key== confirm_key:
+            cur.execute('INSERT INTO users (fname,lname,passwd,email) VALUES (%s,%s,%s,%s)',(fname,lname,pw_hash,email))
             conn.commit()
             return render_template('questions.html')
         else:

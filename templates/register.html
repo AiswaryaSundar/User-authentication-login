@@ -21,7 +21,7 @@
                 class="img-fluid" alt="Sample image">
             </div>
             <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-              <form action="{{url_for('register')}}" method="post">
+              <form action="{{url_for('register')}}" method="POST">
                 <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
                   <p class="lead fw-normal mb-0 me-3">Sign Up</p>
                 </div>
@@ -31,34 +31,34 @@
                 <!-- User Name input -->
                 <div class="form-outline mb-4">
                   <input type="text" id="fname" class="form-control form-control-lg"
-                    placeholder="Enter your First Name" />
+                    placeholder="Enter your First Name" name="fname" />
                   <label class="form-label" for="form3Example3">First Name</label>
                 </div>
       
                 <!-- Email input -->
                 <div class="form-outline mb-3">
-                  <input type="text" id="lname" class="form-control form-control-lg"
+                  <input type="text" id="lname" name="lname" class="form-control form-control-lg"
                     placeholder="Enter your Last Name" />
                   <label class="form-label" for="form3Example4">Last Name</label>
                 </div>
 
                 <!-- Contact input -->
                 <div class="form-outline mb-3">
-                    <input type="email" id="email" class="form-control form-control-lg"
+                    <input type="email" id="email" name="email" class="form-control form-control-lg"
                       placeholder="Enter your email" />
                     <label class="form-label" for="form3Example4">Email</label>
                   </div>
 
                 <!-- Create Password input -->
                 <div class="form-outline mb-3">
-                    <input type="password" id="password" class="form-control form-control-lg"
+                    <input type="password" id="password" name="password" class="form-control form-control-lg"
                       placeholder="Create a Password" />
                     <label class="form-label" for="form3Example4">Password</label>
                   </div>  
 
                 <!-- Confirm Password input -->
                 <div class="form-outline mb-3">
-                    <input type="password" id="confirm_passsword" class="form-control form-control-lg"
+                    <input type="password" id="confirm_passsword" name="confirm_passsword" class="form-control form-control-lg"
                       placeholder="Re-enter your Password" />
                     <label class="form-label" for="form3Example4">Confirm Password</label>
                   </div>  
