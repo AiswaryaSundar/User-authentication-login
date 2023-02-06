@@ -10,7 +10,7 @@
       integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
       crossorigin="anonymous"
     />
-    <title>Authorization</title>
+    <title>Questions Entering</title>
   </head>
   <body
     background="https://images.unsplash.com/photo-1508614999368-9260051292e5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjB8fGNvbG9yJTIwYmFja2dyb3VuZHxlbnwwfHwwfHw%3D&w=1000&q=80"
@@ -18,17 +18,17 @@
     <div
       class="justify-content-center align-items-center container mx-10 my-5 py-2"
     >
-    <form action="{{url_for('question')}}" method="post">
+    <form action=" {{url_for('questions')}} " method="POST">
       <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label"
-          ><h2>Email</h2></label
+          ><h2>Enter Your Email Again Pls !</h2></label
         >
       </div>
       <div class="mb-3">
         <input
           type="text"
           class="w-50 p-2 form-control"
-          id="email"
+          name="email"
           placeholder="Enter your email...."
         />
       </div>
@@ -41,7 +41,8 @@
         <input
           type="text"
           class="w-50 p-2 form-control"
-          id="ans1"
+          name="ans1"
+          
           placeholder="Enter your answer...."
         />
       </div>
@@ -55,7 +56,8 @@
         <input
           type="text"
           class="w-50 p-2 form-control"
-          id="ans2"
+          name="ans2"
+          
           placeholder="Enter your answer...."
         />
       </div>
@@ -69,12 +71,14 @@
         <input
           type="text"
           class="w-50 p-2 form-control"
-          id="ans3"
+          name="ans3"
+          
           placeholder="Enter your answer...."
         />
       </div>
 
       <div class="mb-3 my-5 py-5">
+        <a href=""></a>
         <button type="submit" class="btn btn-primary">Submit</button>
       </div>
     </form>
