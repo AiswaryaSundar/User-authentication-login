@@ -1,65 +1,44 @@
-
 from flask import Flask, request, session, redirect, url_for, render_template, flash
 import psycopg2
 import psycopg2.extras
+from random import *  
+import smtplib
+from flask_mail import Mail
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
-#conn = None
-#cur = None
+mail = Mail(app)  
 
-# try:
-#     conn = psycopg2.connect(
-#              host='localhost', 
-#              database='postgres',
-#              user='postgres',
-#              password='Aruba@123',
-#              port='5433'
-#              )
-
-#     cur = conn.cursor()
-
-#     create_table = ''' CREATE TABLE IF NOT EXISTS users (
-#                          id  int PRIMARY KEY,
-#                          fname varchar(40) NOT NULL,
-#                          lname varchar(40) NOT NULL,
-#                          uname varchar(40) NOT NULL,
-#                          email varchar(40) NOT NULL); '''
-
-#     create_table_ques = ''' CREATE TABLE IF NOT EXISTS UserQuestions (
-#                          CONSTRAINT fk_Email  
-#                          FOREIGN KEY(email)   
-#                          REFERENCES UsersDetails(email)
-#                          q1 varchar(40) NOT NULL,
-#                          q2 varchar(40) NOT NULL,
-#                          q3 varchar(40) NOT NULL,
-#                          ans1 varchar(40) NOT NULL,
-#                          ans2 varchar(40) NOT NULL,
-#                          ans3 varchar(40) NOT NULL); '''
-#     cur.execute(create_table)
-
-#     conn.commit()
-# except Exception as error:
-#     print('DB Connection Error')
-# finally:
-#     if cur is not None:
-#      cur.close()
-#     if conn is not None: 
-#      conn.close()
+app.config["MAIL_SERVER"]='smtp.gmail.com'  
+app.config["MAIL_PORT"] = 465      
+app.config["MAIL_USERNAME"] = os.environ.get('mail_username')
+app.config['MAIL_PASSWORD'] = os.environ.get('mail_password')
+app.config['MAIL_USE_TLS'] = False  
+app.config['MAIL_USE_SSL'] = True  
+mail = Mail(app)  
+app.secret_key = 'cairocoders-ednal'
 
 conn = psycopg2.connect(
              host='localhost', 
              database='demo',
-             port='5432'
+             port='5432',
+             user='postgres',
+             password='gokul1234'
              )
+
+otp = randint(100000,999999) 
 
 cur = conn.cursor()
 
 @app.route('/')
-def reg():
+def home():
     return render_template('register.html')
 
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['GET','POST'])
 def register():
+    cur = conn.cursor
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
         lname = request.form['lname']
         email = request.form['email']
         passwd = request.form['password']
@@ -70,7 +49,7 @@ def register():
                           passwd varchar(40) NOT NULL,
                           email varchar(40) NOT NULL); '''
         #check for validations pls
-
+        print('table creating')
         create_table_ques = ''' CREATE TABLE IF NOT EXISTS UserQuestions (
                           CONSTRAINT fk_Email  
                           FOREIGN KEY(email)   
@@ -89,6 +68,9 @@ def register():
             return render_template('questions.html')
         else:
             flash('Password does not match')
+    elif request.method == 'POST':
+        flash('Please fill out the form!')
+    return render_template('register.html')
 
 @app.route('/questions', methods=['GET','POST'])
 def questions():
@@ -113,7 +95,6 @@ def login():
     if request.method == 'POST' and 'email' in request.form and 'passwd' in request.form:
         email = request.form['email']
         passwd = request.form['passwd']
-        print(passwd)
         cur.execute('SELECT * FROM users WHERE email = %s', (email,))
         accnt = cur.fetchone()
 
@@ -128,35 +109,24 @@ def login():
             flash('Incorrect Username/password')
     return render_template('index.html')
 
+@app.route('/verify',methods = ["POST"])  
+def verify():
+   email = request.form["email"]
+   s = smtplib.SMTP('smtp.gmail.com' , 587)
+   s.starttls()
+   s.login(os.environ.mail_username   , os.environ.mail_password)
+   message = str(otp)
+   s.sendmail(os.environ.mail_username , email , message)
+   s.quit()
+   return render_template('verify.html') 
 
-
-
-
-# from flask import Flask, render_template, request
-# import psycopg2
-
-
-# app = Flask(__name__)
-
-# @app.route("/security_question_validation")
-# def get_questions(): 
-#     # function to api
-#     try: 
-#         conn = psycopg2.connect(database="demo", host='127.0.0.1', port= '5432')
-#     except:
-#         print("DB not connected")
-#     conn.autocommit = True
-#     cursor = conn.cursor()
-#     a1="rosi"
-#     a2="roti"
-#     a3="kns"
-#     r1=request.form['q1']
-#     r2=request.form['q2']
-#     r3=request.form['q3']
-#     if(r1==a1 and r2==a2 and r3==a3):
-#         return "<h2>Login Success</h2>"
-#     else:
-#         return render_template("/")
+@app.route('/validate',methods=["POST"]) 
+def validate():
+   user_otp = request.form['otp']
+   if otp == int(user_otp):
+     return "<h3> Email  verification is  successful </h3>"
+   
+   return "<h3>failure, OTP does not match</h3>"   
 
 @app.route("/")
 def hello_world():
