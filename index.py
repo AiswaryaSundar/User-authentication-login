@@ -8,7 +8,7 @@ from flask_mail import Mail
 import os
 import bcrypt 
 from flask_bcrypt import bcrypt
-
+from createTable import Table
 import hashlib
 
 app = Flask(__name__)
@@ -24,6 +24,11 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True  
 mail = Mail(app)  
 app.secret_key = 'cairocoders-ednal'
+obj= Table() 
+# obj.create_table()
+# obj.create_security_table()
+obj.add_security_data() 
+obj.add_question_data()
 
 conn = psycopg2.connect(
              database="postgres", user='kirtipurohit', password='Aruba@123', host='127.0.0.1', port= '5432'
@@ -39,7 +44,6 @@ def home():
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
-    cur = conn.cursor()
     if request.method == "POST":
         fname= request.form['fname']
         lname = request.form['lname']
@@ -47,13 +51,7 @@ def register():
         passwd = request.form['password']
         c_passwd = request.form['confirm_passsword']
         print(fname, lname, email, passwd, c_passwd)
-        create_table = ''' CREATE TABLE IF NOT EXISTS users (
-                          fname varchar(40) NOT NULL,
-                          lname varchar(40) NOT NULL,
-                          passwd varchar(40) NOT NULL,
-                          email varchar(40) NOT NULL); '''
-        #check for validations pls
-        print('table creating')
+        
         #Encryption 
         salt = os.urandom(32) # Remember this
         key = hashlib.pbkdf2_hmac(
@@ -68,27 +66,13 @@ def register():
             salt, # Provide the salt
             100000 # It is recommended to use at least 100,000 iterations of SHA-256 
         )
-        create_table_ques = ''' CREATE TABLE IF NOT EXISTS UserQuestions (
-                          CONSTRAINT fk_Email  
-                          FOREIGN KEY(email)   
-                          REFERENCES users(email), 
-
-                          q1 varchar(40) NOT NULL,
-                          q2 varchar(40) NOT NULL,
-                          q3 varchar(40) NOT NULL,
-                          ans1 varchar(40) NOT NULL,
-                          ans2 varchar(40) NOT NULL,
-                          ans3 varchar(40) NOT NULL); '''
-        cur.execute(create_table)
-        cur.execute(create_table_ques)
         if key== confirm_key:
-            cur.execute('INSERT INTO users (fname,lname,passwd,email) VALUES (%s,%s,%s,%s)',(fname,lname,pw_hash,email))
-            conn.commit()
-            return render_template('questions.html')
+            print("Inserted values")
+            obj.insert_values([fname, lname, key, email])
+            return render_template('success.html')
         else:
             flash('Password does not match')
-    elif request.method == 'POST':
-        flash('Please fill out the form!')
+
     return render_template('register.html')
 
 @app.route('/questions', methods=['GET','POST'])
@@ -96,7 +80,8 @@ def questions():
     ques_dic = {1: 'what is the name of your favorite pet?',
                 2: 'what is your favorite food?',
                 3: 'what was the name of your first elementary school?'}
-    if request.method == 'POST' and 'ans1' in request.form and 'ans2' in request.form and 'ans3' in request.form and 'email' in request.form:
+    if request.method == 'POST' and 'ans1' in request.form and 'ans2' in request.form \
+        and 'ans3' in request.form and 'email' in request.form:
         ans1 = request.form['ans1']
         ans2 = request.form['ans2']
         ans3 = request.form['ans3']
