@@ -55,23 +55,13 @@ def register():
         #check for validations pls
         print('table creating')
         #Encryption 
-        salt = os.urandom(32) # Remember this
-        key = hashlib.pbkdf2_hmac(
-            'sha256', # The hash digest algorithm for HMAC
-            passwd.encode('utf-8'), # Convert the password to bytes
-            salt, # Provide the salt
-            100000 # It is recommended to use at least 100,000 iterations of SHA-256 
-        )
-        confirm_key = hashlib.pbkdf2_hmac(
-            'sha256', # The hash digest algorithm for HMAC
-            c_passwd.encode('utf-8'), # Convert the password to bytes
-            salt, # Provide the salt
-            100000 # It is recommended to use at least 100,000 iterations of SHA-256 
-        )
-        print(key , confirm_key)
-        cur.execute(create_table)
-        
-        if key == confirm_key:
+        if passwd==c_passwd:
+            key = hashlib.pbkdf2_hmac(
+                'sha256', # The hash digest algorithm for HMAC
+                passwd.encode('utf-8'), # Convert the password to bytes
+                os.environ.salt, # Provide the salt
+                100000 # It is recommended to use at least 100,000 iterations of SHA-256 
+            )
             cur.execute('INSERT INTO UserDetails (fname,lname,passwd,email) VALUES (%s,%s,%s,%s)',(fname,lname,key,email))
             conn.commit()
             return render_template('questions.html')
@@ -123,11 +113,10 @@ def login():
         ans2 = request.form['ans2']
         ans3 = request.form['ans3']
         #Encryption 
-        salt = os.urandom(32) # Remember this
         passwdgot = hashlib.pbkdf2_hmac(
             'sha256', # The hash digest algorithm for HMAC
             passwd.encode('utf-8'), # Convert the password to bytes
-            salt, # Provide the salt
+            os.environ.salt, # Provide the salt
             100000 # It is recommended to use at least 100,000 iterations of SHA-256 
         )
         cur.execute('SELECT passwd FROM UserDetails WHERE email = %s', (email,))
