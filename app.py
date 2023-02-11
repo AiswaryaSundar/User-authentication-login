@@ -14,15 +14,15 @@ import hashlib
 app = Flask(__name__)
 # app= bcrypt(app) 
 
-mail = Mail(app)  
+# mail = Mail(app)  
 
-app.config["MAIL_SERVER"]='smtp.gmail.com'  
-app.config["MAIL_PORT"] = 465      
-app.config["MAIL_USERNAME"] = os.environ.get('mail_username')
-app.config['MAIL_PASSWORD'] = os.environ.get('mail_password')
-app.config['MAIL_USE_TLS'] = False  
-app.config['MAIL_USE_SSL'] = True  
-mail = Mail(app)  
+# app.config["MAIL_SERVER"]='smtp.gmail.com'  
+# app.config["MAIL_PORT"] = 465      
+# app.config["MAIL_USERNAME"] = os.environ.get('mail_username')
+# app.config['MAIL_PASSWORD'] = os.environ.get('mail_password')
+# app.config['MAIL_USE_TLS'] = False  
+# app.config['MAIL_USE_SSL'] = True  
+# mail = Mail(app)  
 app.secret_key = 'cairocoders-ednal'
 
 conn = psycopg2.connect(
@@ -119,6 +119,7 @@ def login():
             os.environ.salt, # Provide the salt
             100000 # It is recommended to use at least 100,000 iterations of SHA-256 
         )
+        cur.execute('select * from UserDetails WHERE email = %s',)
         cur.execute('SELECT passwd FROM UserDetails WHERE email = %s', (email,))
         accnt = cur.fetchone()
         cur.execute('SELECT ans1 FROM UserQuestions WHERE email = %s', (email,))
