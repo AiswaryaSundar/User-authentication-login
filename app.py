@@ -10,6 +10,9 @@ import bcrypt
 from flask_bcrypt import bcrypt
 
 import hashlib
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 # app= bcrypt(app) 
@@ -26,7 +29,7 @@ app = Flask(__name__)
 app.secret_key = 'cairocoders-ednal'
 
 conn = psycopg2.connect(
-             database="postgres", user='postgres', password='Aruba@123', host='127.0.0.1', port= '5433'
+             database= os.getenv('db_name'), user=os.getenv('db_user'), password=os.getenv('db_password'), host=os.getenv('db_host'), port= os.getenv('db_port')
              )
 
 otp = randint(100000,999999) 
@@ -46,23 +49,27 @@ def register():
         email = request.form['email']
         passwd = request.form['password']
         c_passwd = request.form['confirm_passsword']
-        print(fname, lname, email, passwd, c_passwd)
+        print(fname, lname, email, passwd, type(c_passwd))
         create_table = ''' CREATE TABLE IF NOT EXISTS UserDetails (
                           fname varchar(40) NOT NULL,
                           lname varchar(40) NOT NULL,
                           passwd varchar(255) NOT NULL,
                           email varchar(40) NOT NULL); '''
+        cur.execute(create_table)
         #check for validations pls
         print('table creating')
         #Encryption 
+        salt = os.getenv('salt')
+        pw= passwd.encode('utf-8')
+        print(salt, type(salt), type(pw))
         if passwd==c_passwd:
             key = hashlib.pbkdf2_hmac(
                 'sha256', # The hash digest algorithm for HMAC
-                passwd.encode('utf-8'), # Convert the password to bytes
-                os.environ.salt, # Provide the salt
+                pw, # Convert the password to bytes
+                salt.encode('utf-8'), # Provide the salt
                 100000 # It is recommended to use at least 100,000 iterations of SHA-256 
             )
-            cur.execute('INSERT INTO UserDetails (fname,lname,passwd,email) VALUES (%s,%s,%s,%s)',(fname,lname,key,email))
+            cur.execute('INSERT INTO userdetails (fname,lname,passwd,email) VALUES (%s,%s,%s,%s)',(fname,lname,key,email))
             conn.commit()
             return render_template('questions.html')
         else:
@@ -86,17 +93,17 @@ def questions():
         ans3 = request.form['ans3']
         email = request.form['email']
         print(ans1,ans2,ans3,email)
-        create_table_ques = ''' CREATE TABLE IF NOT EXISTS UserQuestions (
-                          email varchar(40) PRIMARY KEY, 
-                          q1 varchar(255) NOT NULL,
-                          q2 varchar(255) NOT NULL,
-                          q3 varchar(255) NOT NULL,
-                          ans1 varchar(40) NOT NULL,
-                          ans2 varchar(40) NOT NULL,
-                          ans3 varchar(40) NOT NULL); '''
-        cur.execute(create_table_ques)
-        print('table for questions created')
-        cur.execute('INSERT INTO UserQuestions (email,q1,q2,q3,ans1,ans2,ans3) VALUES (%s,%s,%s,%s,%s,%s,%s)',(email,ques_dic[1],ques_dic[2],ques_dic[3],ans1,ans2,ans3))
+        # create_table_ques = ''' CREATE TABLE IF NOT EXISTS UserQuestions (
+        #                   email varchar(40) PRIMARY KEY, 
+        #                   q1 varchar(255) NOT NULL,
+        #                   q2 varchar(255) NOT NULL,
+        #                   q3 varchar(255) NOT NULL,
+        #                   ans1 varchar(40) NOT NULL,
+        #                   ans2 varchar(40) NOT NULL,
+        #                   ans3 varchar(40) NOT NULL); '''
+        # cur.execute(create_table_ques)
+        # print('table for questions created')
+        cur.execute('INSERT INTO userquestions (email,q1,q2,q3,ans1,ans2,ans3) VALUES (%s,%s,%s,%s,%s,%s,%s)',(email,ques_dic[1],ques_dic[2],ques_dic[3],ans1,ans2,ans3))
         print('data entered in userquestions successfully')
         conn.commit()
         return render_template('login.html')
@@ -113,13 +120,17 @@ def login():
         ans2 = request.form['ans2']
         ans3 = request.form['ans3']
         #Encryption 
+        salt = os.getenv('salt')
         passwdgot = hashlib.pbkdf2_hmac(
             'sha256', # The hash digest algorithm for HMAC
             passwd.encode('utf-8'), # Convert the password to bytes
-            os.environ.salt, # Provide the salt
+            salt.encode('utf-8'), # Provide the salt
             100000 # It is recommended to use at least 100,000 iterations of SHA-256 
         )
-        cur.execute('select * from UserDetails WHERE email = %s',)
+        user_details = cur.execute('select * from UserDetails WHERE email = %s', (email,))
+        user_answers = cur.execute('SELECT * FROM UserQuestions WHERE email = %s', (email,))
+        print(user_details)
+        print(user_answers)
         cur.execute('SELECT passwd FROM UserDetails WHERE email = %s', (email,))
         accnt = cur.fetchone()
         cur.execute('SELECT ans1 FROM UserQuestions WHERE email = %s', (email,))
@@ -134,14 +145,14 @@ def login():
             passwdreal = accnt[0]
             print(passwdreal)
             if passwdgot == passwdreal and ans1==ans1got and ans2==ans2got and ans3==ans3got:
-               return render_template('home.html')
+               return render_template('verify.html', email=-email)
             else:
                 flash('Incorrect Username/password')
         else:
             flash('Incorrect Username/password')
-        return render_template('home.html')
+        return render_template('verify.html', email=email)
     print('login didnt worked')
-    return render_template('verify.html')
+    return render_template('verify.html',email=email)
     
 
 @app.route('/verify',methods = ["POST"])  
@@ -149,9 +160,9 @@ def verify():
    email = request.form["email"]
    s = smtplib.SMTP('smtp.gmail.com' , 587)
    s.starttls()
-   s.login(os.environ.mail_username   , os.environ.mail_password)
+   s.login(os.getenv('mail_username') , os.getenv('mail_password'))
    message = str(otp)
-   s.sendmail(os.environ.mail_username , email , message)
+   s.sendmail(os.getenv('mail_username') , email , message)
    s.quit()
 
    return render_template('validate.html') 

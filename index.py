@@ -106,7 +106,7 @@ def login():
             passwdreal = accnt['passwd']
             print(passwdreal)
             if passwd == passwdreal:
-               return render_template('home.html')
+               return render_template('verify.html', email = email)
             else:
                 flash('Incorrect Username/password')
         else:
