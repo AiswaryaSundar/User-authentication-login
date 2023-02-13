@@ -38,13 +38,15 @@
               <div class="form-outline mb-3">
                 <input
                   type="email"
-                  id="email"
-                  name="email"
+                  id="emaild"
+                  name="emaild"
                   value="{{email}}"
                   class="form-control form-control-lg"
                   placeholder="Enter your email"
+                  disabled
                 />
-                <label class="form-label" for="form3Example4">Enter Email For Verification</label>
+<input type="hidden" name="email" id="email" value="{{email}}">
+                <label class="form-label" for="form3Example4">OTP will be sent to this email.</label>
               </div>
 
               
