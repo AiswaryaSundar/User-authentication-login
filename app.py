@@ -3,12 +3,8 @@ import psycopg2
 import psycopg2.extras
 from random import *  
 import smtplib
-from flask_mail import Mail
-# from dotenv import load_dotenv
-import os
-import bcrypt 
-from flask_bcrypt import bcrypt
 
+import os
 import hashlib
 from dotenv import load_dotenv
 
@@ -24,8 +20,6 @@ app = Flask(__name__)
 # app.config["MAIL_USERNAME"] = os.environ.get('mail_username')
 # app.config['MAIL_PASSWORD'] = os.environ.get('mail_password')
 # app.config['MAIL_USE_TLS'] = False  
-# app.config['MAIL_USE_SSL'] = True  
-# mail = Mail(app)  
 app.secret_key = 'cairocoders-ednal'
 
 conn = psycopg2.connect(
