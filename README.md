@@ -1,4 +1,12 @@
 # User-authentication-login
+*  Onboarding(name, email, password)
+*  Security questions( 3 questions, ans from any 5 random)
+*  Actual Login(3 factor login-username, password)
+*  OTP Module(send email with OTP)
+*  Verification of security questions(flash any three random question, the ans should match the prev one)
+*  Integration of all modules
+*  Database schema
+*  Additional module(Encryption of the password.)
 
 Two Schemas along with the two tables are created
   1. users for getting firstname,lastname,email,password
